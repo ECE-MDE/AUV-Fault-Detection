@@ -27,6 +27,8 @@ eta0 = [0,0,0,0,0,0]';
 %   nu=[u,v,w,p,q,r] where u,v,w are surge,sway, and heave and are the
 %   linear velocities in the body reference frame and p,q,r are the
 %   roll-rate, pitch-rate, and yaw-rate in the body reference frame
+
+% CAN GIVE INITIAL VELOCITY
 nu0 = [0,0,0,0,0,0]';
 
 %Combine the two sets of initial conditions to create a single state vector
@@ -37,6 +39,8 @@ x0=[nu0;eta0];
 % and yaw. In general the yaw commands can be abstracted to a trajectory in
 % x,y coordinates with additional effort. 
 
+%THINGS WE SHOULD MESS WITH
+% Max speed 3-4 m/s
 depth_command = [5*ones(1,2000),10*ones(1,2000),5*ones(1,2001)];
 yaw_command = [zeros(1,3000),60*ones(1,3001)];
 
@@ -134,6 +138,9 @@ for i=1:ceil(tf/dt)+1
 
     [t,x] = ode45(@(t,x)dynamics(t,x,u),tspan,x0); %insert 690 dynamics
     x0 = x(end,:);
+    % set a signal to 0 to simulate sensor error
+    % insert step change to measurement to simulate being knocked off
+    % course (depth, yaw, other)
     t0 = t(end);
     x_tot = [x_tot;x];
     t_tot = [t_tot;t];
@@ -167,8 +174,8 @@ hold off
 
 figure
 hold on
-plot(t_tot,x_tot(9,:),'b');
 plot(plot_t,depth_command,'--k','LineWidth',1.5);
+plot(t_tot,x_tot(9,:),'b');
 grid on
 xlabel('time (seconds');
 ylabel('depth (m)');

@@ -154,7 +154,10 @@ X_uudd = X_uuddr;
 %X_uuddc = 0; % drag (in x) from canards deflection
 X_uudd_fin = X_uudd/2; % X-force drag for EACH individual fin (2 for 690)
 
+% THINGS TO MESS WITH TO SIMULATE FINS BEING BAD
+% HOW EFFECTIVE RUDDER IS AT PRODUCING STARBOARD FORCE
 Y_uud =6.5161; %9.0728;     %690 %5.7 will single handedly solve the time issue; the new uud coeffs are determined by Lakshmi after adding 15deg with higher mesh resolution and fin gap inclusion %6.5161;  %
+% HOW EFFECTIVE RUDDER IS AT PRODUCING YAW MOMENT
 N_uud =-6.9036; %-9.1827 % -6.9036; ;      %690
 
 %K_uud_roll = -2*Y_uud*b; % Roll-moment per "delta_roll" radian
@@ -367,6 +370,7 @@ X_qdot	=   0.0329535;
 
 
 % ======= Fin Terms =========
+% THINGS TO MODIFY, DIVIDE BY 2, ETC
 Z_uud = Y_uud;     % if symmetric control surfaces, (canards may violate)
 M_uud =  -N_uud;      % according to our definition of d, if symmetric
 
@@ -391,6 +395,7 @@ delta_ee = delta_e ;
 
 
 % Newtons, required thrust for the desired speed for 690
+% simulate ineffective prop, divide X_uu to generate less trust (probably)
 thrust = -X_uu*des_vel*abs(des_vel); % - X_uudde*u*abs(u)*(delta_ee^2) - X_uuddr*u*abs(u)*(delta_re^2); 
 
 %% calculate the control input forces
