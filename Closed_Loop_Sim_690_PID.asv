@@ -1,6 +1,4 @@
 clear
-clear all
-clf
 
 %% User defined settings
 %initial time (sec):    In general there shouldn't be a need to use an
@@ -90,9 +88,9 @@ delta = []; %control input vector
 
 x_hat_tot = [];
 
-filter = extendedKalmanFilter(@(x, u)dynamics_solve(x, u, dt), @measure, x0, 'HasMeasurementWrapping', true);
-% filter.ProcessNoise = 0.001;
-% filter.MeasurementNoise = 0.001;
+filter = extendedKalmanFilter(@dynamics, @measure, x0, 'HasMeasurementWrapping', true);
+filter.ProcessNoise = 0;
+filter.MeasurementNoise = 0.5;
 
 %Simulation Loop
 for i=1:ceil(tf/dt)+1
@@ -152,16 +150,14 @@ for i=1:ceil(tf/dt)+1
     % insert step change to measurement to simulate being knocked off
     % course (depth, yaw, other)
     t0 = t(end);
-%     x_tot = [x_tot;x];
-%     t_tot = [t_tot;t];
-    x_tot = [x_tot;x0];
-    t_tot = [t_tot;t0];
+    x_tot = [x_tot;x];
+    t_tot = [t_tot;t];
 
     [x_hat, x_hat_cov] = predict(filter,u);
-%     x_hat = x_hat';
+    x_hat = x_hat';
     x_hat_tot = [x_hat_tot;x_hat];
-%     disp(x0)
-%     correct(filter,x0,u);
+
+    correct(filter,x0,u);
     
 end
 %% Plot results
@@ -218,12 +214,7 @@ nu = x(1:6);
 eta = x(7:12);
 [nu_dot,eta_dot] = Sim_690_Rev12(nu,u,eta);
 x_dot=[nu_dot;eta_dot];
-end
 
-function x_f = dynamics_solve(x_i,u,dt)
-    tspan = [0,dt]; 
-    [~,x_span] = ode45(@(t,x)dynamics(x,u),tspan,x_i); %insert 690 dynamics
-    x_f = x_span(end,:);
 end
 
 function [y, bounds] = measure(x,u)
@@ -238,11 +229,11 @@ function [y, bounds] = measure(x,u)
     -inf inf;
     -inf inf;
     -inf inf;
-    -pi, pi;
-    -pi, pi;
-    -pi, pi;
-%     0, 2*pi;
-%     0, 2*pi;
-%     0, 2*pi;
+%     -pi, pi;
+%     -pi, pi;
+%     -pi, pi;
+    0, 2*pi;
+    0, 2*pi;
+    0, 2*pi;
     ];
 end
