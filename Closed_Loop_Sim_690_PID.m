@@ -90,10 +90,13 @@ t_tot = zeros(n_sim_iters, 1);
 delta = []; %control input vector
 
 x_hat_tot = zeros(n_sim_iters, 12);
+x_cov_tot = zeroes(n_sim_iters, 12, 12);
 
-filter = extendedKalmanFilter(@(x, u)dynamics_solve(x, u, dt), @measure, x0, 'HasMeasurementWrapping', true);
-% filter.ProcessNoise = 0.001;
-% filter.MeasurementNoise = 0.001;
+ekf = extendedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, x0, 'HasMeasurementWrapping', true);
+% filter = extendedKalmanFilter(@(x, u)discretized_exact(x, u, dt), @measure, x0, 'HasMeasurementWrapping', true);
+
+ekf.ProcessNoise = 1.0;
+ekf.MeasurementNoise = 1.0;
 
 %Simulation Loop
 for i=1:n_sim_iters+1
@@ -158,10 +161,8 @@ for i=1:n_sim_iters+1
     x_tot = [x_tot;x0];
     t_tot = [t_tot;t0];
 
-    [x_hat, x_hat_cov] = predict(filter,u);
-%     x_hat = x_hat';
+    [x_hat, x_hat_cov] = predict(ekf,u);
     x_hat_tot = [x_hat_tot;x_hat];
-%     disp(x0)
 %     correct(filter,x0,u);
     
 end
@@ -221,10 +222,15 @@ eta = x(7:12);
 x_dot=[nu_dot;eta_dot];
 end
 
-function x_f = dynamics_solve(x_i,u,dt)
+function x_f = discretized_exact(x_i,u,dt)
     tspan = [0,dt]; 
     [~,x_span] = ode45(@(t,x)dynamics(x,u),tspan,x_i); %insert 690 dynamics
     x_f = x_span(end,:);
+end
+
+function x_f = discretized_euler(x_i,u,dt)
+    x_f = x_i + dynamics(x_i, u) * dt;
+    x_f = x_f';
 end
 
 function [y, bounds] = measure(x,u)
