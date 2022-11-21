@@ -14,6 +14,7 @@ tf = 600;
 %                       a new control signal in Hertz
 f_c = 10;
 dt = 1/f_c;   %seconds
+n_sim_iters = ceil(tf/dt);
 
 %   The 690 dynamics have 12 states expressed in either the world     
 %   (inertial) reference frame or the body reference frame. These are
@@ -84,18 +85,18 @@ yaw_loop = PID_690(kp_yaw,ki_yaw,kd_yaw,true,2,dt,i_output_max_yaw,output_max_ya
 depth_loop = PID_690(kp_depth,ki_depth,kd_depth,false,1,dt,i_output_max_depth,output_max_depth);
 
 %% Simulation
-x_tot = [];
-t_tot = [];
+x_tot = zeros(n_sim_iters, 12);
+t_tot = zeros(n_sim_iters, 1);
 delta = []; %control input vector
 
-x_hat_tot = [];
+x_hat_tot = zeros(n_sim_iters, 12);
 
 filter = extendedKalmanFilter(@(x, u)dynamics_solve(x, u, dt), @measure, x0, 'HasMeasurementWrapping', true);
 % filter.ProcessNoise = 0.001;
 % filter.MeasurementNoise = 0.001;
 
 %Simulation Loop
-for i=1:ceil(tf/dt)+1
+for i=1:n_sim_iters+1
 
     %time interval of simulation for this step in the loop
     tspan = [t0,t0+dt]; 
