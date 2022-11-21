@@ -7,6 +7,8 @@ clf
 %      ^          ^
 %      velocities positions
 % ex: yaw = x(YAW);
+global X_VEL Y_VEL Z_VEL ROLL_RATE PITCH_RATE YAW_RATE X Y Z ROLL PITCH YAW
+
 X_VEL = 1;
 Y_VEL = 2;
 Z_VEL = 3;
@@ -15,13 +17,13 @@ ROLL_RATE = 4;
 PITCH_RATE = 5;
 YAW_RATE = 6;
 
-X = 1;
-Y = 2;
-Z = 3;
+X = 7;
+Y = 8;
+Z = 9;
 
-ROLL = 4;   % roll
-PITCH = 5; % pitch
-YAW = 6;   % yaw 
+ROLL = 10;   % roll
+PITCH = 11; % pitch
+YAW = 12;   % yaw 
 
 %% User defined settings
 %initial time (sec):    In general there shouldn't be a need to use an
@@ -117,7 +119,10 @@ ekf = extendedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, zeros(1
 % filter = extendedKalmanFilter(@(x, u)discretized_exact(x, u, dt), @measure, x0, 'HasMeasurementWrapping', true);
 
 % ekf.ProcessNoise = 1.0;
-% ekf.MeasurementNoise = 1.0;
+ekf.MeasurementNoise = zeros(12, 12);
+ekf.MeasurementNoise(X, X) = 1;
+ekf.MeasurementNoise(Y, Y) = 1;
+ekf.MeasurementNoise(Z, Z) = 1;
 
 %Simulation Loop
 for i=1:n_sim_iters+1
@@ -255,9 +260,10 @@ function x_f = discretized_euler(x_i,u,dt)
 end
 
 function [y, bounds] = measure(x,u)
-%     y = x + normrnd(0, 1, 12, 1);
-%     y = x + 10*randn(12, 1);
+    global X_VEL Y_VEL Z_VEL ROLL_RATE PITCH_RATE YAW_RATE X Y Z ROLL PITCH YAW
+
     y = x;
+    y(X:Z) = y(X:Z) + normrnd(0, 1, size(y(X:Z)));
     bounds = [
     -inf inf;
     -inf inf;
