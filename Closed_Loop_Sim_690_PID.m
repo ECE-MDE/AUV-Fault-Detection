@@ -2,6 +2,27 @@ clear
 clear all
 clf
 
+% names and corresponding indices for variables in state vector x
+% x = [nu;        eta];
+%      ^          ^
+%      velocities positions
+% ex: yaw = x(YAW);
+X_VEL = 1;
+Y_VEL = 2;
+Z_VEL = 3;
+
+ROLL_RATE = 4;
+PITCH_RATE = 5;
+YAW_RATE = 6;
+
+X = 1;
+Y = 2;
+Z = 3;
+
+ROLL = 4;   % roll
+PITCH = 5; % pitch
+YAW = 6;   % yaw 
+
 %% User defined settings
 %initial time (sec):    In general there shouldn't be a need to use an
 %                       initial time other than zero.
@@ -27,7 +48,7 @@ n_sim_iters = ceil(tf/dt);
 %   operating below the surface of the water) and roll, pitch, and yaw are
 %   the vehicle attitude parameters 
 
-eta0 = [0,0,0,0,0,0]'; 
+eta0 = [0,0,100,0,0,0]'; 
 
 %   nu=[u,v,w,p,q,r] where u,v,w are surge,sway, and heave and are the
 %   linear velocities in the body reference frame and p,q,r are the
@@ -90,13 +111,13 @@ t_tot = zeros(n_sim_iters, 1);
 delta = []; %control input vector
 
 x_hat_tot = zeros(n_sim_iters, 12);
-x_cov_tot = zeroes(n_sim_iters, 12, 12);
+x_hat_cov_tot = zeros(n_sim_iters, 12, 12);
 
-ekf = extendedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, x0, 'HasMeasurementWrapping', true);
+ekf = extendedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, zeros(12, 1), 'HasMeasurementWrapping', true);
 % filter = extendedKalmanFilter(@(x, u)discretized_exact(x, u, dt), @measure, x0, 'HasMeasurementWrapping', true);
 
-ekf.ProcessNoise = 1.0;
-ekf.MeasurementNoise = 1.0;
+% ekf.ProcessNoise = 1.0;
+% ekf.MeasurementNoise = 1.0;
 
 %Simulation Loop
 for i=1:n_sim_iters+1
@@ -161,9 +182,10 @@ for i=1:n_sim_iters+1
     x_tot = [x_tot;x0];
     t_tot = [t_tot;t0];
 
+    correct(ekf,x0,u);
     [x_hat, x_hat_cov] = predict(ekf,u);
-    x_hat_tot = [x_hat_tot;x_hat];
-%     correct(filter,x0,u);
+    x_hat_tot = [x_hat_tot;x_hat'];
+%     x_hat_cov_tot = [x_hat_cov_tot; x_hat_cov];
     
 end
 %% Plot results
@@ -230,10 +252,11 @@ end
 
 function x_f = discretized_euler(x_i,u,dt)
     x_f = x_i + dynamics(x_i, u) * dt;
-    x_f = x_f';
 end
 
 function [y, bounds] = measure(x,u)
+%     y = x + normrnd(0, 1, 12, 1);
+%     y = x + 10*randn(12, 1);
     y = x;
     bounds = [
     -inf inf;
