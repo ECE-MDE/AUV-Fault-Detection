@@ -8,11 +8,11 @@ rng('default') % For reproducibility
 %      ^          ^
 %      velocities positions
 % ex: yaw = x(YAW);
-global X_VEL Y_VEL Z_VEL ROLL_RATE PITCH_RATE YAW_RATE X Y Z ROLL PITCH YAW
+global U V W ROLL_RATE PITCH_RATE YAW_RATE X Y Z ROLL PITCH YAW
 
-X_VEL = 1;
-Y_VEL = 2;
-Z_VEL = 3;
+U = 1;
+V = 2;
+W = 3;
 
 ROLL_RATE = 4;
 PITCH_RATE = 5;
@@ -263,7 +263,7 @@ function x_f = discretized_euler(x_i,u,dt)
 end
 
 function [y, bounds] = measure(x,u)
-    global X_VEL Y_VEL Z_VEL ROLL_RATE PITCH_RATE YAW_RATE X Y Z ROLL PITCH YAW
+    global U V W ROLL_RATE PITCH_RATE YAW_RATE X Y Z ROLL PITCH YAW
 
     y = x;
 %     y(X:Z) = y(X:Z) + normrnd(0, 1, size(y(X:Z)));
