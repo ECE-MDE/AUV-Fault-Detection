@@ -116,6 +116,7 @@ t_tot = zeros(n_sim_iters, 1);
 
 x_hat_tot = zeros(n_sim_iters, 12);
 x_hat_cov_tot = zeros(n_sim_iters, 12, 12);
+x_hat_var_tot = zeros(n_sim_iters, 12);
 
 noisy_residual_tot = zeros(n_sim_iters, 12);
 noisy_residual_cov_tot = zeros(n_sim_iters, 12, 12);
@@ -204,7 +205,7 @@ for i=1:n_sim_iters+1
     % Simulate sensor noise
     y = x0;
     y(X:Z) = y(X:Z) + normrnd(0, 10, size(x0(X:Z)));
-    y(U:W) = y(U:W) + normrnd(0, 10, size(x0(U:W)));
+    y(U:W) = y(U:W) + normrnd(0, 1, size(x0(U:W)));
 
     % Update EKF with noisy sensor measurements
     [corrected_x, corrected_x_cov] = correct(ekf,y,u);
@@ -216,8 +217,9 @@ for i=1:n_sim_iters+1
     [true_residual, true_residual_cov] = residual(ekf, x0, u);
 
     y_tot(i, :) = y;
-    x_hat_tot(i, :) = x_hat';
-    x_hat_cov_tot(i, :, :) = x_hat_cov;
+    x_hat_tot(i, :) = corrected_x';
+    x_hat_cov_tot(i, :, :) = corrected_x_cov;
+    x_hat_var_tot(i, :) = diag(corrected_x_cov);
 
     noisy_residual_tot(i, :) = noisy_residual;
     noisy_residual_cov_tot(i, :, :) = noisy_residual_cov;
@@ -276,6 +278,9 @@ legend('True Residual', 'Noisy Residual', ...
        'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw', ...
        'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw')
 xlabel('Time (s)')
+pbaspect([1 1 1])
+daspect([1 1 1])
+
 plotbrowser
 plotedit('off')
 
@@ -284,12 +289,18 @@ grid on
 hold on
 plot(NaN,'Color', 'r', 'LineWidth', 1.5)
 plot(NaN,'Color', 'b', 'LineWidth', 1.5)
+plot(NaN,'Color', 'g', 'LineWidth', 1.5)
 plot(t_tot, x_tot, 'LineWidth', 1.5, 'Color', 'r')
 plot(t_tot, x_hat_tot, 'LineWidth', 1.5, 'Color', 'b')
-legend('Ground Truth', 'Estimate', ...
+plot(t_tot, x_hat_var_tot, 'LineWidth', 1.5, 'Color', 'g')
+legend('Ground Truth', 'Estimate', 'Variance', ...
+       'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw', ...
        'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw', ...
        'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw')
 xlabel('Time (s)')
+pbaspect([1 1 1])
+daspect([1 1 1])
+
 
 figure
 hold on
@@ -297,11 +308,11 @@ grid on
 plot3(x_hat_tot(7,:),x_hat_tot(8,:),x_hat_tot(9,:),'LineWidth',1.5, 'Color', 'r')
 plot3(x_tot(7,:),x_tot(8,:),x_tot(9,:),'LineWidth',1.5, 'Color', 'b')
 plot3(y_tot(7,:),y_tot(8,:),y_tot(9,:),'LineWidth',1.5, 'Color', 'g')
-legend('estimate', 'ground truth', 'measurement')
+legend('Estimate', 'Ground Truth', 'Measurement')
 title('Vehicle Trajectory in North-East-Down Coordinate System')
-xlabel('north (m)')
-ylabel('east (m)')
-zlabel('depth (m)')
+xlabel('North (m)')
+ylabel('East (m)')
+zlabel('Depth (m)')
 pbaspect([1 1 1])
 daspect([1 1 1])
 view(3)
