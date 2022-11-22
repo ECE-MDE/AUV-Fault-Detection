@@ -1,6 +1,6 @@
 clear
 clear all
-clf
+% clf
 rng('default') % For reproducibility
 
 % names and corresponding indices for variables in state vector x
@@ -8,7 +8,7 @@ rng('default') % For reproducibility
 %      ^          ^
 %      velocities positions
 % ex: yaw = x(YAW);
-global U V W ROLL_RATE PITCH_RATE YAW_RATE X Y Z ROLL PITCH YAW
+global U V W ROLL_RATE PITCH_RATE YAW_RATE X Y Z ROLL PITCH YAW 
 
 U = 1;
 V = 2;
@@ -109,12 +109,21 @@ yaw_loop = PID_690(kp_yaw,ki_yaw,kd_yaw,true,2,dt,i_output_max_yaw,output_max_ya
 depth_loop = PID_690(kp_depth,ki_depth,kd_depth,false,1,dt,i_output_max_depth,output_max_depth);
 
 %% Simulation
+delta = []; %control input vector
+
 x_tot = zeros(n_sim_iters, 12);
 t_tot = zeros(n_sim_iters, 1);
-delta = []; %control input vector
 
 x_hat_tot = zeros(n_sim_iters, 12);
 x_hat_cov_tot = zeros(n_sim_iters, 12, 12);
+
+noisy_residual_tot = zeros(n_sim_iters, 12);
+noisy_residual_cov_tot = zeros(n_sim_iters, 12, 12);
+
+true_residual_tot = zeros(n_sim_iters, 12);
+true_residual_cov_tot = zeros(n_sim_iters, 12, 12);
+y_tot = zeros(n_sim_iters, 12);
+
 
 ekf_x0 = zeros(12, 1);
 ekf_x0(YAW) = pi/2;
@@ -123,9 +132,9 @@ ekf = extendedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, ekf_x0,
 
 % ekf.ProcessNoise = 1.0;
 ekf.MeasurementNoise = zeros(12, 12);
-ekf.MeasurementNoise(X, X) = 1;
-ekf.MeasurementNoise(Y, Y) = 1;
-ekf.MeasurementNoise(Z, Z) = 1;
+ekf.MeasurementNoise(X, X) = 100;
+ekf.MeasurementNoise(Y, Y) = 100;
+ekf.MeasurementNoise(Z, Z) = 100;
 ekf.MeasurementNoise(U, U) = 1;
 ekf.MeasurementNoise(V, V) = 1;
 ekf.MeasurementNoise(W, W) = 1;
@@ -182,31 +191,48 @@ for i=1:n_sim_iters+1
     u = [delta(:,i);speed_command(i)];
 
     [t,x] = ode45(@(t,x)dynamics(x,u),tspan,x0); %insert 690 dynamics
-    x0 = x(end,:);
 
     % set a signal to 0 to simulate sensor error
     % insert step change to measurement to simulate being knocked off
     % course (depth, yaw, other)
+    x0 = x(end,:);
     t0 = t(end);
-%     x_tot = [x_tot;x];
-%     t_tot = [t_tot;t];
+
     x_tot(i, :) = x0;
     t_tot(i, :) = t0;
     
     % Simulate sensor noise
-    x_with_noise = x0;
-    x_with_noise(X:Z) = x_with_noise(X:Z) + normrnd(0, 1, size(x(X:Z)));
-    x_with_noise(U:W) = x_with_noise(U:W) + normrnd(0, 1, size(x(U:W)));
-    correct(ekf,x_with_noise,u);
+    y = x0;
+    y(X:Z) = y(X:Z) + normrnd(0, 10, size(x0(X:Z)));
+    y(U:W) = y(U:W) + normrnd(0, 10, size(x0(U:W)));
+
+    % Update EKF with noisy sensor measurements
+    [corrected_x, corrected_x_cov] = correct(ekf,y,u);
+
     [x_hat, x_hat_cov] = predict(ekf,u);
+
+    % Get EKF error vs. sensor correction and vs. ground truth
+    [noisy_residual, noisy_residual_cov] = residual(ekf, y, u);
+    [true_residual, true_residual_cov] = residual(ekf, x0, u);
+
+    y_tot(i, :) = y;
     x_hat_tot(i, :) = x_hat';
-%     x_hat_cov_tot = [x_hat_cov_tot; x_hat_cov];
+    x_hat_cov_tot(i, :, :) = x_hat_cov;
+
+    noisy_residual_tot(i, :) = noisy_residual;
+    noisy_residual_cov_tot(i, :, :) = noisy_residual_cov;
+
+    true_residual_tot(i, :) = true_residual;
+    true_residual_cov_tot(i, :, :) = true_residual_cov;
     
 end
 %% Plot results
 x_tot=x_tot';
 x_hat_tot = x_hat_tot';
+y_tot = y_tot';
 plot_t=0:dt:ceil(tf/dt)*dt;
+
+set(0,'DefaultFigureWindowStyle','docked');
 
 % figure
 % grid on
@@ -240,18 +266,49 @@ plot_t=0:dt:ceil(tf/dt)*dt;
 % legend('Commanded Depth','PID depth(m)')
 
 figure
+grid on
+hold on
+plot(NaN,'Color', 'r', 'LineWidth', 1.5)
+plot(NaN,'Color', 'b', 'LineWidth', 1.5)
+plot(t_tot, true_residual_tot, 'LineWidth', 1.5, 'Color', 'r')
+plot(t_tot, noisy_residual_tot, 'LineWidth', 1.5, 'Color', 'b')
+legend('True Residual', 'Noisy Residual', ...
+       'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw', ...
+       'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw')
+xlabel('Time (s)')
+plotbrowser
+plotedit('off')
+
+figure
+grid on
+hold on
+plot(NaN,'Color', 'r', 'LineWidth', 1.5)
+plot(NaN,'Color', 'b', 'LineWidth', 1.5)
+plot(t_tot, x_tot, 'LineWidth', 1.5, 'Color', 'r')
+plot(t_tot, x_hat_tot, 'LineWidth', 1.5, 'Color', 'b')
+legend('Ground Truth', 'Estimate', ...
+       'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw', ...
+       'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw')
+xlabel('Time (s)')
+
+figure
 hold on
 grid on
 plot3(x_hat_tot(7,:),x_hat_tot(8,:),x_hat_tot(9,:),'LineWidth',1.5, 'Color', 'r')
 plot3(x_tot(7,:),x_tot(8,:),x_tot(9,:),'LineWidth',1.5, 'Color', 'b')
-legend('estimate', 'ground truth')
+plot3(y_tot(7,:),y_tot(8,:),y_tot(9,:),'LineWidth',1.5, 'Color', 'g')
+legend('estimate', 'ground truth', 'measurement')
 title('Vehicle Trajectory in North-East-Down Coordinate System')
 xlabel('north (m)')
 ylabel('east (m)')
 zlabel('depth (m)')
 pbaspect([1 1 1])
 daspect([1 1 1])
+view(3)
+
 hold off
+
+% plotbrowser'on') % open the plot browser cause it's the best thing ever
 
 %Helper function used for running ODE45 on the 690 vehicle dynamics
 function x_dot = dynamics(x,u)
