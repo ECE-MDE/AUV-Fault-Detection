@@ -1,6 +1,7 @@
 clear
 clear all
 clf
+rng('default') % For reproducibility
 
 % names and corresponding indices for variables in state vector x
 % x = [nu;        eta];
@@ -115,14 +116,14 @@ delta = []; %control input vector
 x_hat_tot = zeros(n_sim_iters, 12);
 x_hat_cov_tot = zeros(n_sim_iters, 12, 12);
 
-ekf = extendedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, zeros(12, 1), 'HasMeasurementWrapping', true);
+ekf = extendedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, zeros(12, 1), 'HasMeasurementWrapping', false);
 % filter = extendedKalmanFilter(@(x, u)discretized_exact(x, u, dt), @measure, x0, 'HasMeasurementWrapping', true);
 
 % ekf.ProcessNoise = 1.0;
 ekf.MeasurementNoise = zeros(12, 12);
-ekf.MeasurementNoise(X, X) = 1;
-ekf.MeasurementNoise(Y, Y) = 1;
-ekf.MeasurementNoise(Z, Z) = 1;
+ekf.MeasurementNoise(X, X) = 10;
+ekf.MeasurementNoise(Y, Y) = 10;
+ekf.MeasurementNoise(Z, Z) = 10;
 
 %Simulation Loop
 for i=1:n_sim_iters+1
@@ -184,12 +185,14 @@ for i=1:n_sim_iters+1
     t0 = t(end);
 %     x_tot = [x_tot;x];
 %     t_tot = [t_tot;t];
-    x_tot = [x_tot;x0];
-    t_tot = [t_tot;t0];
-
-    correct(ekf,x0,u);
+    x_tot(i, :) = x0;
+    t_tot(i, :) = t0;
+    
+    x_with_noise = x0;
+    x_with_noise(X:Z) = x_with_noise(X:Z) + normrnd(0, 1, size(x(X:Z)));
+    correct(ekf,x_with_noise,u);
     [x_hat, x_hat_cov] = predict(ekf,u);
-    x_hat_tot = [x_hat_tot;x_hat'];
+    x_hat_tot(i, :) = x_hat';
 %     x_hat_cov_tot = [x_hat_cov_tot; x_hat_cov];
     
 end
@@ -198,36 +201,36 @@ x_tot=x_tot';
 x_hat_tot = x_hat_tot';
 plot_t=0:dt:ceil(tf/dt)*dt;
 
-figure
-grid on
-hold on
-plot(plot_t,pitch_command*180/pi,'--k')
-plot(t_tot,x_tot(11,:)*180/pi,'b','LineWidth',1.5)
-legend('commanded pitch','PID simulated pitch');
-ylabel('pitch (degrees)')
-xlabel('time(seconds)')
-title('Simulated Vehicle Pitch')
-hold off
+% figure
+% grid on
+% hold on
+% plot(plot_t,pitch_command*180/pi,'--k')
+% plot(t_tot,x_tot(11,:)*180/pi,'b','LineWidth',1.5)
+% legend('commanded pitch','PID simulated pitch');
+% ylabel('pitch (degrees)')
+% xlabel('time(seconds)')
+% title('Simulated Vehicle Pitch')
+% hold off
 
-figure
-grid on
-plot(plot_t,yaw_command*180/pi,'--k')
-title('Simulated Vehicle Yaw')
-hold on
-plot(t_tot,x_tot(12,:)*180/pi,'b','LineWidth',1.5)
-ylabel('yaw (degrees)')
-xlabel('time(seconds)')
-legend('commanded yaw','PID simulated yaw');
-hold off
+% figure
+% grid on
+% plot(plot_t,yaw_command*180/pi,'--k')
+% title('Simulated Vehicle Yaw')
+% hold on
+% plot(t_tot,x_tot(12,:)*180/pi,'b','LineWidth',1.5)
+% ylabel('yaw (degrees)')
+% xlabel('time(seconds)')
+% legend('commanded yaw','PID simulated yaw');
+% hold off
 
-figure
-hold on
-plot(plot_t,depth_command,'--k','LineWidth',1.5);
-plot(t_tot,x_tot(9,:),'b');
-grid on
-xlabel('time (seconds');
-ylabel('depth (m)');
-legend('Commanded Depth','PID depth(m)')
+% figure
+% hold on
+% plot(plot_t,depth_command,'--k','LineWidth',1.5);
+% plot(t_tot,x_tot(9,:),'b');
+% grid on
+% xlabel('time (seconds');
+% ylabel('depth (m)');
+% legend('Commanded Depth','PID depth(m)')
 
 figure
 hold on
@@ -263,22 +266,23 @@ function [y, bounds] = measure(x,u)
     global X_VEL Y_VEL Z_VEL ROLL_RATE PITCH_RATE YAW_RATE X Y Z ROLL PITCH YAW
 
     y = x;
-    y(X:Z) = y(X:Z) + normrnd(0, 1, size(y(X:Z)));
-    bounds = [
-    -inf inf;
-    -inf inf;
-    -inf inf;
-    -inf inf;
-    -inf inf;
-    -inf inf;
-    -inf inf;
-    -inf inf;
-    -inf inf;
-    -pi, pi;
-    -pi, pi;
-    -pi, pi;
+%     y(X:Z) = y(X:Z) + normrnd(0, 1, size(y(X:Z)));
+%     bounds = [
+%     -inf inf;
+%     -inf inf;
+%     -inf inf;
+%     -inf inf;
+%     -inf inf;
+%     -inf inf;
+%     -inf inf;
+%     -inf inf;
+%     -inf inf;
+% %     -pi, pi;
+% %     -pi, pi;
+% %     -pi, pi;
+%     -pi/2, pi/2;
+%     -pi/2, pi/2;
+% %     -pi, pi;
 %     0, 2*pi;
-%     0, 2*pi;
-%     0, 2*pi;
-    ];
+%     ];
 end
