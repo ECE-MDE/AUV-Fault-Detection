@@ -242,6 +242,8 @@ title('Vehicle Trajectory in North-East-Down Coordinate System')
 xlabel('north (m)')
 ylabel('east (m)')
 zlabel('depth (m)')
+pbaspect([1 1 1])
+daspect([1 1 1])
 hold off
 
 %Helper function used for running ODE45 on the 690 vehicle dynamics
