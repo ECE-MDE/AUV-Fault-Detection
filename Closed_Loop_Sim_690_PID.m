@@ -51,7 +51,7 @@ n_sim_iters = ceil(tf/dt);
 %   operating below the surface of the water) and roll, pitch, and yaw are
 %   the vehicle attitude parameters 
 
-eta0 = [0,0,100,0,0,0]'; 
+eta0 = [0,0,10,0,0,0]'; 
 
 %   nu=[u,v,w,p,q,r] where u,v,w are surge,sway, and heave and are the
 %   linear velocities in the body reference frame and p,q,r are the
@@ -116,14 +116,19 @@ delta = []; %control input vector
 x_hat_tot = zeros(n_sim_iters, 12);
 x_hat_cov_tot = zeros(n_sim_iters, 12, 12);
 
-ekf = extendedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, zeros(12, 1), 'HasMeasurementWrapping', false);
+ekf_x0 = zeros(12, 1);
+ekf_x0(YAW) = pi/2;
+ekf = extendedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, ekf_x0, 'HasMeasurementWrapping', false);
 % filter = extendedKalmanFilter(@(x, u)discretized_exact(x, u, dt), @measure, x0, 'HasMeasurementWrapping', true);
 
 % ekf.ProcessNoise = 1.0;
 ekf.MeasurementNoise = zeros(12, 12);
-ekf.MeasurementNoise(X, X) = 10;
-ekf.MeasurementNoise(Y, Y) = 10;
-ekf.MeasurementNoise(Z, Z) = 10;
+ekf.MeasurementNoise(X, X) = 1;
+ekf.MeasurementNoise(Y, Y) = 1;
+ekf.MeasurementNoise(Z, Z) = 1;
+ekf.MeasurementNoise(U, U) = 1;
+ekf.MeasurementNoise(V, V) = 1;
+ekf.MeasurementNoise(W, W) = 1;
 
 %Simulation Loop
 for i=1:n_sim_iters+1
@@ -188,8 +193,10 @@ for i=1:n_sim_iters+1
     x_tot(i, :) = x0;
     t_tot(i, :) = t0;
     
+    % Simulate sensor noise
     x_with_noise = x0;
     x_with_noise(X:Z) = x_with_noise(X:Z) + normrnd(0, 1, size(x(X:Z)));
+    x_with_noise(U:W) = x_with_noise(U:W) + normrnd(0, 1, size(x(U:W)));
     correct(ekf,x_with_noise,u);
     [x_hat, x_hat_cov] = predict(ekf,u);
     x_hat_tot(i, :) = x_hat';
