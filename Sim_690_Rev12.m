@@ -154,9 +154,10 @@ X_uudd = X_uuddr;
 %X_uuddc = 0; % drag (in x) from canards deflection
 X_uudd_fin = X_uudd/2; % X-force drag for EACH individual fin (2 for 690)
 
-% THINGS TO MESS WITH TO SIMULATE FINS BEING BAD
+% THINGS TO MESS WITH TO SIMULATE FINS BEING BAD fault
 % HOW EFFECTIVE RUDDER IS AT PRODUCING STARBOARD FORCE
 Y_uud =6.5161; %9.0728;     %690 %5.7 will single handedly solve the time issue; the new uud coeffs are determined by Lakshmi after adding 15deg with higher mesh resolution and fin gap inclusion %6.5161;  %
+
 % HOW EFFECTIVE RUDDER IS AT PRODUCING YAW MOMENT
 N_uud =-6.9036; %-9.1827 % -6.9036; ;      %690
 

@@ -128,7 +128,8 @@ y_tot = zeros(n_sim_iters, 12);
 
 ekf_x0 = zeros(12, 1);
 ekf_x0(YAW) = pi/2;
-ekf = extendedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, ekf_x0, 'HasMeasurementWrapping', false);
+%ekf = extendedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, ekf_x0, 'HasMeasurementWrapping', false);
+ekf = extendedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, ekf_x0);
 % filter = extendedKalmanFilter(@(x, u)discretized_exact(x, u, dt), @measure, x0, 'HasMeasurementWrapping', true);
 
 % ekf.ProcessNoise = 1.0;
@@ -193,11 +194,16 @@ for i=1:n_sim_iters+1
 
     [t,x] = ode45(@(t,x)dynamics(x,u),tspan,x0); %insert 690 dynamics
 
-    % set a signal to 0 to simulate sensor error
+    % set a signal to 0 to simulate sensor error fault
     % insert step change to measurement to simulate being knocked off
     % course (depth, yaw, other)
     x0 = x(end,:);
     t0 = t(end);
+    % sensor error
+    if t0 > 300
+        x0(Z) = -70;
+    end
+        
 
     x_tot(i, :) = x0;
     t_tot(i, :) = t0;
@@ -278,6 +284,7 @@ legend('True Residual', 'Noisy Residual', ...
        'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw', ...
        'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw')
 xlabel('Time (s)')
+title('Residuals with Depth Sensor Fault')
 pbaspect([1 1 1])
 daspect([1 1 1])
 
@@ -298,6 +305,7 @@ legend('Ground Truth', 'Estimate', 'Variance', ...
        'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw', ...
        'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw')
 xlabel('Time (s)')
+title('Variance with Depth Sensor Fault')
 pbaspect([1 1 1])
 daspect([1 1 1])
 
@@ -309,7 +317,7 @@ plot3(x_hat_tot(7,:),x_hat_tot(8,:),x_hat_tot(9,:),'LineWidth',1.5, 'Color', 'r'
 plot3(x_tot(7,:),x_tot(8,:),x_tot(9,:),'LineWidth',1.5, 'Color', 'b')
 plot3(y_tot(7,:),y_tot(8,:),y_tot(9,:),'LineWidth',1.5, 'Color', 'g')
 legend('Estimate', 'Ground Truth', 'Measurement')
-title('Vehicle Trajectory in North-East-Down Coordinate System')
+title('Vehicle Trajectory in North-East-Down Coordinate System with Depth Sensor Fault')
 xlabel('North (m)')
 ylabel('East (m)')
 zlabel('Depth (m)')
