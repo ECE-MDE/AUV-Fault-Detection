@@ -120,26 +120,38 @@ x_hat_var_tot = zeros(n_sim_iters, 12);
 
 noisy_residual_tot = zeros(n_sim_iters, 12);
 noisy_residual_cov_tot = zeros(n_sim_iters, 12, 12);
+noisy_residual_var_tot = zeros(n_sim_iters, 12);
+
 
 true_residual_tot = zeros(n_sim_iters, 12);
 true_residual_cov_tot = zeros(n_sim_iters, 12, 12);
+% true_residual_var_tot = zeros(n_sim_iters, 12);
 y_tot = zeros(n_sim_iters, 12);
 
+for_the_cdr_demo = zeros(n_sim_iters, 1);
 
-ekf_x0 = zeros(12, 1);
-ekf_x0(YAW) = pi/2;
+filter_x0 = zeros(12, 1);
+% filter_x0(YAW) = pi/2;
 %ekf = extendedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, ekf_x0, 'HasMeasurementWrapping', false);
-ekf = extendedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, ekf_x0);
+filter = extendedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, filter_x0);
+% filter = unscentedKalmanFilter(@(x, u)discretized_euler(x, u, dt), @measure, filter_x0);
 % filter = extendedKalmanFilter(@(x, u)discretized_exact(x, u, dt), @measure, x0, 'HasMeasurementWrapping', true);
 
-% ekf.ProcessNoise = 1.0;
-ekf.MeasurementNoise = zeros(12, 12);
-ekf.MeasurementNoise(X, X) = 100;
-ekf.MeasurementNoise(Y, Y) = 100;
-ekf.MeasurementNoise(Z, Z) = 100;
-ekf.MeasurementNoise(U, U) = 1;
-ekf.MeasurementNoise(V, V) = 1;
-ekf.MeasurementNoise(W, W) = 1;
+% filter.ProcessNoise = 1;
+% filter.ProcessNoise = zeros(12, 12);
+% filter.ProcessNoise(X, X) = 0.01;
+% filter.ProcessNoise(Y, Y) = 0.01;
+% filter.ProcessNoise(Z, Z) = 0.01;
+% filter.ProcessNoise(U, U) = 0.01;
+% filter.ProcessNoise(V, V) = 0.01;
+% filter.ProcessNoise(W, W) = 0.01;
+filter.MeasurementNoise = zeros(12, 12);
+filter.MeasurementNoise(X, X) = 100;
+filter.MeasurementNoise(Y, Y) = 100;
+filter.MeasurementNoise(Z, Z) = 100;
+filter.MeasurementNoise(U, U) = 1;
+filter.MeasurementNoise(V, V) = 1;
+filter.MeasurementNoise(W, W) = 1;
 
 %Simulation Loop
 for i=1:n_sim_iters+1
@@ -199,28 +211,31 @@ for i=1:n_sim_iters+1
     % course (depth, yaw, other)
     x0 = x(end,:);
     t0 = t(end);
-    % sensor error
-    if t0 > 300
-        x0(Z) = -70;
-    end
-        
 
     x_tot(i, :) = x0;
     t_tot(i, :) = t0;
     
+
     % Simulate sensor noise
     y = x0;
+    % Simulate sensor fault
+%     if t0 > 300
+%         y(Z) = -70;
+%     end
+%     if t0 > 300
+%         y(Z) = 10.22;
+%     end
     y(X:Z) = y(X:Z) + normrnd(0, 10, size(x0(X:Z)));
     y(U:W) = y(U:W) + normrnd(0, 1, size(x0(U:W)));
 
-    % Update EKF with noisy sensor measurements
-    [corrected_x, corrected_x_cov] = correct(ekf,y,u);
+    % Update filter with noisy sensor measurements
+    [corrected_x, corrected_x_cov] = correct(filter,y,u);
 
-    [x_hat, x_hat_cov] = predict(ekf,u);
+    [x_hat, x_hat_cov] = predict(filter,u);
 
-    % Get EKF error vs. sensor correction and vs. ground truth
-    [noisy_residual, noisy_residual_cov] = residual(ekf, y, u);
-    [true_residual, true_residual_cov] = residual(ekf, x0, u);
+    % Get filter error vs. sensor correction and vs. ground truth
+    [noisy_residual, noisy_residual_cov] = residual(filter, y, u);
+    [true_residual, true_residual_cov] = residual(filter, x0, u);
 
     y_tot(i, :) = y;
     x_hat_tot(i, :) = corrected_x';
@@ -229,6 +244,9 @@ for i=1:n_sim_iters+1
 
     noisy_residual_tot(i, :) = noisy_residual;
     noisy_residual_cov_tot(i, :, :) = noisy_residual_cov;
+    for_the_cdr_demo(i) = noisy_residual_cov(X, V);
+    noisy_residual_var_tot(i, :) = diag(noisy_residual_cov);
+
 
     true_residual_tot(i, :) = true_residual;
     true_residual_cov_tot(i, :, :) = true_residual_cov;
@@ -278,15 +296,26 @@ grid on
 hold on
 plot(NaN,'Color', 'r', 'LineWidth', 1.5)
 plot(NaN,'Color', 'b', 'LineWidth', 1.5)
+plot(NaN,'Color', 'g', 'LineWidth', 1.5)
+plot(NaN,'Color', '#8f34eb', 'LineWidth', 1.5)
+plot(NaN,'Color', '#03dffc', 'LineWidth', 1.5)
+
 plot(t_tot, true_residual_tot, 'LineWidth', 1.5, 'Color', 'r')
 plot(t_tot, noisy_residual_tot, 'LineWidth', 1.5, 'Color', 'b')
-legend('True Residual', 'Noisy Residual', ...
+plot(t_tot, movmean(noisy_residual_tot, 31), 'LineWidth', 1.5, 'Color', 'g')
+plot(t_tot, movstd(noisy_residual_tot, 31), 'LineWidth', 1.5, 'Color', '#8f34eb')
+plot(t_tot, noisy_residual_var_tot, 'LineWidth', 1.5, 'Color', '#03dffc')
+
+legend('True Residual', 'Noisy Residual', 'Noisy Residual Running Mean', 'Noisy Residual Running Std', 'Noisy Residual Variance', ...
+       'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw', ...
+       'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw', ...
+       'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw', ...
        'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw', ...
        'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw')
 xlabel('Time (s)')
 title('Residuals with Depth Sensor Fault')
-pbaspect([1 1 1])
-daspect([1 1 1])
+% pbaspect([1 1 1])
+% daspect([1 1 1])
 
 plotbrowser
 plotedit('off')
@@ -306,17 +335,19 @@ legend('Ground Truth', 'Estimate', 'Variance', ...
        'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'roll', 'pitch', 'yaw')
 xlabel('Time (s)')
 title('Variance with Depth Sensor Fault')
-pbaspect([1 1 1])
-daspect([1 1 1])
+% pbaspect([1 1 1])
+% daspect([1 1 1])
 
 
 figure
 hold on
 grid on
-plot3(x_hat_tot(7,:),x_hat_tot(8,:),x_hat_tot(9,:),'LineWidth',1.5, 'Color', 'r')
-plot3(x_tot(7,:),x_tot(8,:),x_tot(9,:),'LineWidth',1.5, 'Color', 'b')
-plot3(y_tot(7,:),y_tot(8,:),y_tot(9,:),'LineWidth',1.5, 'Color', 'g')
-legend('Estimate', 'Ground Truth', 'Measurement')
+plot3(x_hat_tot(X,:),x_hat_tot(Y,:),x_hat_tot(Z,:),'LineWidth',1.5, 'Color', 'r')
+plot3(x_tot(X,:),x_tot(Y,:),x_tot(Z,:),'LineWidth',1.5, 'Color', 'b')
+plot3(y_tot(X,:),y_tot(Y,:),y_tot(Z,:),'LineWidth',1.5, 'Color', 'g')
+plot3(movmean(x_hat_tot(7,:), 3), movmean(x_hat_tot(8,:), 3), movmean(x_hat_tot(9,:), 3),'LineWidth',1.5, 'Color', 'g')
+
+legend('Estimate', 'Ground Truth', 'Measurement', 'Filtered Estimate')
 title('Vehicle Trajectory in North-East-Down Coordinate System with Depth Sensor Fault')
 xlabel('North (m)')
 ylabel('East (m)')
@@ -324,8 +355,12 @@ zlabel('Depth (m)')
 pbaspect([1 1 1])
 daspect([1 1 1])
 view(3)
-
 hold off
+
+% figure
+% hold on
+% histogram(true_residual_tot(:, Z));
+% hold off
 
 % plotbrowser'on') % open the plot browser cause it's the best thing ever
 
