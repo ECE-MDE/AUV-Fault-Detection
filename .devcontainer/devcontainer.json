@@ -1,15 +1,18 @@
 {
-    "build": { 
-      "dockerfile": "../Dockerfile", 
-      "args": {}
-    },
-    "runArgs": [],
-    "customizations": {
-      "vscode": {
-        "extensions": [
-			"JaehyunShim.vscode-ros",
-			"ms-python.python"
-		]
-      }
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "args": {}
+  },
+  "runArgs": [],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "JaehyunShim.vscode-ros",
+        "ms-python.python"
+      ]
     }
+  },
+  "mounts": [
+    "source=${localWorkspaceFolder}/avl,target=/root/avl"
+  ]
 }
