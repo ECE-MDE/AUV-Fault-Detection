@@ -13,6 +13,6 @@
     }
   },
   "mounts": [
-    "source=${localWorkspaceFolder}/avl,target=/root/avl"
+    "source=${localWorkspaceFolder}/avl,target=/root/avl,type=bind,consistency=cached"
   ]
 }
