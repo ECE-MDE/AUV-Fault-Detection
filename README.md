@@ -8,4 +8,5 @@
 - In the container, `cd avl` and `./setup.sh`
     - VSCode will ask for your CMAR credentials, then pull the necessary git repos and their dependencies
     - The `avl` command will also be added to bash
-    
+- Build the AVL code: `catkin_make`
+- Activate the catkin workspace: `source devel/setup.sh`
