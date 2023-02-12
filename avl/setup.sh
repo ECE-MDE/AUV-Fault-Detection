@@ -1,4 +1,4 @@
-#/usr/bin/bash
+#!/usr/bin/bash
 
 git config --global credential.helper store
 # ln -s /workspaces/AUV-Fault-Detection/avl /root/avl
