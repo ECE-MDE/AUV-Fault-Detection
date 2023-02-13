@@ -14,3 +14,8 @@
 
 ## Setting up Mission Control
 Follow the instructions [here](https://cmar.ece.vt.edu/avl/user-interface/avl_mission_control)
+
+## To do
+[] Run setup.sh automatically
+[] Install Mission Control automatically
+[] Fix fluxbox toolbar font being white
