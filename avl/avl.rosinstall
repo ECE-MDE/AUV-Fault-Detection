@@ -34,3 +34,6 @@
 - git:
     local-name: avl_690
     uri: https://cmar.ece.vt.edu/avl/vehicles/avl_690.git
+- git:
+    local-name: avl_fault_detection
+    uri: https://github.com/ECE-MDE/avl_fault_detection.git
