@@ -1,0 +1,23 @@
+{
+  "name": "ROS Noetic",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "args": {}
+  },
+  "runArgs": ["--shm-size=512m"],
+  "forwardPorts": [6080],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // "JaehyunShim.vscode-ros",
+        "ms-python.python"
+      ]
+    }
+  },
+  "mounts": [
+    "source=${localWorkspaceFolder}/avl,target=/root/avl,type=bind,consistency=cached"
+  ],
+  "features": {
+    "ghcr.io/devcontainers/features/desktop-lite:1": {}
+  }
+}

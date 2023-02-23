@@ -1,0 +1,39 @@
+- git:
+    local-name: avl_asio
+    uri: https://cmar.ece.vt.edu/avl/ros-packages/avl_asio.git
+- git:
+    local-name: avl_comms
+    uri: https://cmar.ece.vt.edu/avl/ros-packages/avl_comms.git
+- git:
+    local-name: avl_control
+    uri: https://cmar.ece.vt.edu/avl/ros-packages/avl_control.git
+- git:
+    local-name: avl_core
+    uri: https://cmar.ece.vt.edu/avl/ros-packages/avl_core.git
+- git:
+    local-name: avl_devices
+    uri: https://cmar.ece.vt.edu/avl/ros-packages/avl_devices.git
+- git:
+    local-name: avl_guidance
+    uri: https://cmar.ece.vt.edu/avl/ros-packages/avl_guidance.git
+- git:
+    local-name: avl_msgs
+    uri: https://cmar.ece.vt.edu/avl/ros-packages/avl_msgs.git
+- git:
+    local-name: avl_navigation
+    uri: https://cmar.ece.vt.edu/avl/ros-packages/avl_navigation.git
+- git:
+    local-name: avl_simulation
+    uri: https://cmar.ece.vt.edu/avl/ros-packages/avl_simulation.git
+- git:
+    local-name: avl_system
+    uri: https://cmar.ece.vt.edu/avl/ros-packages/avl_system.git
+- git:
+    local-name: avl_tools
+    uri: https://cmar.ece.vt.edu/avl/ros-packages/avl_tools.git
+- git:
+    local-name: avl_690
+    uri: https://cmar.ece.vt.edu/avl/vehicles/avl_690.git
+- git:
+    local-name: avl_fault_detection
+    uri: https://github.com/ECE-MDE/avl_fault_detection.git
