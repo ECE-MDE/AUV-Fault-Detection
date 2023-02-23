@@ -84,3 +84,4 @@ CATKIN_IGNORE
 
 avl/avl
 avl/src
+avl/.rosinstall
