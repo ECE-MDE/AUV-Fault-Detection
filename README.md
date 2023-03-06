@@ -13,6 +13,16 @@
 - Reload `.bashrc`: `source ~/.bashrc`
 - Activate the catkin workspace: `source devel/setup.sh`
 
+## Running the simulation
+Syntax: `avl start <package_name> <launch_file_name>`
+
+To start a full system simulation with the `avl_fault_detection` package:
+- `source /opt/ros/noetic/setup.bash`
+- `source /workspaces/AUV-Fault-Detection/avl/devel/setup.bash`
+- `avl start avl_fault_detection full_system_simulation.launch`
+
+`F1 > ROS: Show Status` will show all current node configurations, topics, and publishers
+
 ## Setting up Mission Control
 Follow the instructions [here](https://cmar.ece.vt.edu/avl/user-interface/avl_mission_control)
 

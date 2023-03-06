@@ -1,0 +1,10 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/opt/ros/noetic/lib/python3"
+    ],
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/avl/devel/lib/python3",
+        "/opt/ros/noetic/lib/python3"
+        // /workspaces/AUV-Fault-Detection/avl/devel/lib/python3/dist-packages/avl_msgs
+    ]
+}
