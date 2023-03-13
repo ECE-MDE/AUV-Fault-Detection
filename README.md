@@ -19,6 +19,7 @@ Syntax: `avl start <package_name> <launch_file_name>`
 To start a full system simulation with the `avl_fault_detection` package:
 - `source /opt/ros/noetic/setup.bash`
 - `source /workspaces/AUV-Fault-Detection/avl/devel/setup.bash`
+- `avl setup avl_690`
 - `avl start avl_fault_detection full_system_simulation.launch`
 
 `F1 > ROS: Show Status` will show all current node configurations, topics, and publishers
