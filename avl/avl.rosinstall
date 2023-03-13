@@ -24,7 +24,7 @@
     uri: https://cmar.ece.vt.edu/avl/ros-packages/avl_navigation.git
 - git:
     local-name: avl_simulation
-    uri: https://cmar.ece.vt.edu/avl/ros-packages/avl_simulation.git
+    uri: https://github.com/ECE-MDE/avl_simulation.git
 - git:
     local-name: avl_system
     uri: https://cmar.ece.vt.edu/avl/ros-packages/avl_system.git
