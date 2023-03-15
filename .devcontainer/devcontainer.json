@@ -9,9 +9,9 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        // "JaehyunShim.vscode-ros",
-        "ms-python.python"
-      ]
+		"ms-python.python",
+		"ms-iot.vscode-ros"
+	]
     }
   },
   "mounts": [
