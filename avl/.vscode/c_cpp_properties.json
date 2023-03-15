@@ -1,0 +1,32 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/opt/ros/noetic/include/**",
+        "/workspaces/AUV-Fault-Detection/avl/devel/include/**",
+        "/workspaces/AUV-Fault-Detection/avl/src/avl_690/include/**",
+        "/workspaces/AUV-Fault-Detection/avl/src/avl_asio/include/**",
+        "/workspaces/AUV-Fault-Detection/avl/src/avl_comms/include/**",
+        "/workspaces/AUV-Fault-Detection/avl/src/avl_control/include/**",
+        "/workspaces/AUV-Fault-Detection/avl/src/avl_core/include/**",
+        "/workspaces/AUV-Fault-Detection/avl/src/avl_devices/include/**",
+        "/workspaces/AUV-Fault-Detection/avl/src/avl_guidance/include/**",
+        "/workspaces/AUV-Fault-Detection/avl/src/avl_navigation/include/**",
+        "/workspaces/AUV-Fault-Detection/avl/src/avl_simulation/include/**",
+        "/workspaces/AUV-Fault-Detection/avl/src/avl_system/include/**",
+        "/workspaces/AUV-Fault-Detection/avl/src/avl_tools/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
