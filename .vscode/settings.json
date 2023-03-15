@@ -1,5 +1,6 @@
 {
     "python.autoComplete.extraPaths": [
+        "${workspaceFolder}/avl/devel/lib/python3",
         "/opt/ros/noetic/lib/python3"
     ],
     "python.analysis.extraPaths": [

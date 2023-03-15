@@ -19,5 +19,6 @@
   ],
   "features": {
     "ghcr.io/devcontainers/features/desktop-lite:1": {}
-  }
+  },
+  "postCreateCommand": "cd ${containerWorkspaceFolder}/avl/ && bash setup_shell.sh && bash setup.sh"
 }
