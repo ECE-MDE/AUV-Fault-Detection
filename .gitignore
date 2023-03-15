@@ -82,6 +82,6 @@ qtcreator-*
 # Catkin custom files
 CATKIN_IGNORE
 
-avl/avl
-avl/src
+# avl/avl
+# avl/src
 avl/.rosinstall

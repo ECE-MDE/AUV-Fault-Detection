@@ -2,7 +2,7 @@
 
 git config --global credential.helper store
 # ln -s /workspaces/AUV-Fault-Detection/avl /root/avl
-wstool init src avl.rosinstall
+# wstool init src avl.rosinstall
 sudo apt update
 rosdep install --from-paths . --ignore-src -y
 
