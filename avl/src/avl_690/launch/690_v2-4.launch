@@ -1,0 +1,49 @@
+<launch>
+
+    <!-- =================================================================== -->
+    <!-- Vehicle ID Number -->
+    <!-- =================================================================== -->
+    <rosparam param="/vehicle_id"> 159 </rosparam>
+
+    <!-- =================================================================== -->
+    <!-- Console Logging Settings -->
+    <!-- =================================================================== -->
+    <rosparam param="/logging/console/enable"> true </rosparam>
+    <rosparam param="/logging/console/log_node"> false </rosparam>
+    <rosparam param="/logging/console/log_data"> false </rosparam>
+    <rosparam param="/logging/console/log_debug"> false </rosparam>
+    <rosparam param="/logging/console/log_info"> true </rosparam>
+    <rosparam param="/logging/console/log_warning"> true </rosparam>
+    <rosparam param="/logging/console/log_error"> true </rosparam>
+
+    <!-- =================================================================== -->
+    <!-- File Logging Settings -->
+    <!-- =================================================================== -->
+    <rosparam param="/logging/file/enable"> true </rosparam>
+    <rosparam param="/logging/file/log_node"> true </rosparam>
+    <rosparam param="/logging/file/log_data"> true </rosparam>
+    <rosparam param="/logging/file/log_debug"> true </rosparam>
+    <rosparam param="/logging/file/log_info"> true </rosparam>
+    <rosparam param="/logging/file/log_warning"> true </rosparam>
+    <rosparam param="/logging/file/log_error"> true </rosparam>
+
+    <!-- =================================================================== -->
+    <!-- Nodes -->
+    <!-- =================================================================== -->
+
+    <include file="$(find avl_690)/launch/690_nodes.launch"/>
+
+    <!-- =================================================================== -->
+    <!-- Parameter Overrides -->
+    <!-- =================================================================== -->
+
+    <param name="/pingdsp_sonar_node/sonar_computer_address" type="str" value="10.0.10.158" />
+
+    <param name="/acoustic_channel_node/broadcast_heartbeats" type="bool"   value="true" />
+    <param name="/acoustic_channel_node/enable_lbl_pings"     type="bool"   value="false" />
+    <param name="/acoustic_channel_node/packet_type"          type="int"    value="1" />
+    <param name="/acoustic_channel_node/total_tdma_time"      type="double" value="30.0" />
+    <param name="/acoustic_channel_node/tdma_offset"          type="double" value="20.0" />
+    <param name="/acoustic_channel_node/tdma_duration"        type="double" value="10.0" />
+
+</launch>

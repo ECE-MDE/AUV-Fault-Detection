@@ -1,0 +1,4 @@
+uint8 pulse #number of pulses
+uint8 period #period in seconds
+---
+bool success #return whether toggle was successful

@@ -1,0 +1,13 @@
+#===============================================================================
+# Autonomous Vehicle Library
+#
+# Description: Defines a mission control service.
+#===============================================================================
+
+uint8 interface
+uint8 command
+
+---
+
+bool success
+string message

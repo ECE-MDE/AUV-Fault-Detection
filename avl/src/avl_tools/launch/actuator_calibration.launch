@@ -1,0 +1,37 @@
+<launch>
+
+    <!-- =================================================================== -->
+    <!-- Console Logging Settings -->
+    <!-- =================================================================== -->
+    <rosparam param="/logging/console/enable"> true </rosparam>
+    <rosparam param="/logging/console/log_data"> false </rosparam>
+    <rosparam param="/logging/console/log_debug"> true </rosparam>
+    <rosparam param="/logging/console/log_info"> true </rosparam>
+    <rosparam param="/logging/console/log_warning"> true </rosparam>
+    <rosparam param="/logging/console/log_error"> true </rosparam>
+
+    <!-- =================================================================== -->
+    <!-- File Logging Settings -->
+    <!-- =================================================================== -->
+    <rosparam param="/logging/file/enable"> true </rosparam>
+    <rosparam param="/logging/file/log_data"> true </rosparam>
+    <rosparam param="/logging/file/log_debug"> true </rosparam>
+    <rosparam param="/logging/file/log_info"> true </rosparam>
+    <rosparam param="/logging/file/log_warning"> true </rosparam>
+    <rosparam param="/logging/file/log_error"> true </rosparam>
+
+    <!-- =================================================================== -->
+    <!-- Nodes -->
+    <!-- =================================================================== -->
+
+    <node name="maestro_pwm_node" pkg="avl_devices" type="maestro_pwm_node"
+          required="true" clear_params="true" output="screen">
+          <rosparam command="load" file="/var/avl_config/maestro_pwm_node.config"/>
+    </node>
+
+    <node name="actuator_calibration_node" pkg="avl_tools" type="actuator_calibration_node"
+        clear_params="true" output="screen" required="true">
+          <rosparam command="load" file="/var/avl_config/actuator_calibration_node.config"/>
+    </node>
+
+</launch>

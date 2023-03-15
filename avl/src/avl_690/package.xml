@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package format="2">
+    
+    <name>avl_690</name>
+    <version>1.0.0</version>
+    <description>Package for code and configuration files pertaining to the 690 AUV</description>
+    <maintainer email="jkleiber@vt.edu">Justin Kleiber</maintainer>
+    <maintainer email="eagle138@vt.edu">Stephen Krauss</maintainer>
+    <url type="website">https://cmar.ece.vt.edu/avl</url>
+    <license>TODO</license>
+
+    <!-- Build Tool Dependency -->
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <!-- Documentation Dependency -->
+    <doc_depend>doxygen</doc_depend>
+
+    <!-- ROS Dependencies -->
+    <depend>roscpp</depend>
+    <depend>std_srvs</depend>
+
+    <!-- AVL Package Dependencies -->
+    <depend>avl_asio</depend>
+    <depend>avl_control</depend>
+    <depend>avl_core</depend>
+    <depend>avl_guidance</depend>
+    <depend>avl_navigation</depend>
+
+</package>

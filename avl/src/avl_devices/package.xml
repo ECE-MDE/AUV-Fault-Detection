@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<package format="2">
+
+    <!-- Package Info -->
+    <name>avl_devices</name>
+    <version>1.0.0</version>
+    <description>Package containing AVL device nodes</description>
+    <maintainer email="eagle138@vt.edu">Stephen Krauss</maintainer>
+    <url type="website">https://cmar.ece.vt.edu/avl</url>
+    <license>TODO</license>
+
+    <!-- Build Tool Dependency -->
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <!-- Documentation Dependency -->
+    <doc_depend>doxygen</doc_depend>
+
+    <!-- ROS Dependencies -->
+    <depend>roscpp</depend>
+    <build_depend>message_generation</build_depend>
+    <exec_depend>message_runtime</exec_depend>
+    <depend>std_msgs</depend>
+    <depend>std_srvs</depend>
+    <depend>geometry_msgs</depend>
+    <depend>sensor_msgs</depend>
+
+    <!-- External Dependencies -->
+    <depend>libusb-1.0-dev</depend>
+    <depend>yaml-cpp</depend>
+
+    <!-- Point Cloud Library -->
+    <build_depend>pcl_ros</build_depend>
+    <exec_depend>pcl_ros</exec_depend>
+
+    <!-- AVL Package Dependencies -->
+    <depend>avl_core</depend>
+    <depend>avl_msgs</depend>
+    <depend>avl_asio</depend>
+    <depend>avl_comms</depend>
+
+</package>

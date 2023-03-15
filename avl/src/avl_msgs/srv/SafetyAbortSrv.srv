@@ -1,0 +1,12 @@
+#===============================================================================
+# Autonomous Vehicle Library
+#
+# Description: Defines a safety abort service.
+#===============================================================================
+
+string message
+
+---
+
+bool success
+string message

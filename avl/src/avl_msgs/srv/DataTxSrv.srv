@@ -1,0 +1,28 @@
+#===============================================================================
+# Autonomous Vehicle Library
+#
+# Description: Definition of a data transmit service request. For use by the
+#              comms manager node to request the transmission of data by the
+#              various communication channel nodes.
+#===============================================================================
+
+#===============================================================================
+#                              REQUEST DEFINITION
+#===============================================================================
+
+# Interface to transmit the data to
+uint8 interface
+
+# Data to be transmitted
+uint8[] data
+
+#===============================================================================
+#                             RESPONSE DEFINITION
+#===============================================================================
+---
+
+# Indicates whether the transmission was successful
+bool success
+
+# Indicates success or the cause of a failure
+string message

@@ -1,0 +1,17 @@
+#===============================================================================
+# Autonomous Vehicle Library
+#
+# Description: Defines a mission mode service.
+#===============================================================================
+
+# Mode to switch into
+uint8 mode
+
+# Duration to switch into the mode in seconds. After the duration, the mode will
+# switch back to the mode that it was before the switch
+float64 duration
+
+---
+
+bool success
+string message

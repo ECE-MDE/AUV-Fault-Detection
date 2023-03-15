@@ -1,0 +1,5 @@
+bool state_enable   #enables or disables the motor
+int32 rpm 	    #rpm of the motor. Positive results in forward motion 
+int32 timeout       #seconds until the motor will command 0
+---
+bool success	    #success is acknowledge from the motor

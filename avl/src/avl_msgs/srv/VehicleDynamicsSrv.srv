@@ -1,0 +1,49 @@
+#===============================================================================
+# Autonomous Vehicle Library
+#
+# Description: Definition of a vehicle dynamics service request.
+#===============================================================================
+
+#===============================================================================
+#                              REQUEST DEFINITION
+#===============================================================================
+
+# Elements of nu, linear and angular velocity
+float64 u   # x-axis linear velocity in m/s
+float64 v   # y-axis linear velocity in m/s
+float64 w   # z-axis linear velocity in m/s
+float64 p   # x-axis angular velocity in rad/s
+float64 q   # y-axis angular velocity in rad/s
+float64 r   # z-axis angular velocity in rad/s
+
+# Elements of eta, position and attitude
+float64 x       # World frame x-axis position in m
+float64 y       # World frame y-axis position in m
+float64 z       # World frame z-axis position in m
+float64 phi     # Roll angle in rad
+float64 theta   # Pitch angle in rad
+float64 psi     # Yaw angle in rad
+
+# Control inputs
+float64 throttle   # Motor speed percentage
+float64 delta_r    # Rudder angle in rad (+ causes turn toward port)
+float64 delta_e    # Elevator angle in rad (+ causes nose down)
+
+# Time step in seconds since last iteration
+float64 dt
+
+#===============================================================================
+#                             RESPONSE DEFINITION
+#===============================================================================
+---
+
+# Propeller RPM
+float64 rpm
+
+# Elements of nu_dot, linear and angular velocity rate of change
+float64 u_dot   # x-axis linear velocity rate of change in m/s^2
+float64 v_dot   # y-axis linear velocity rate of change in m/s^2
+float64 w_dot   # z-axis linear velocity rate of change in m/s^2
+float64 p_dot   # x-axis angular velocity rate of change in rad/s^2
+float64 q_dot   # y-axis angular velocity rate of change in rad/s^2
+float64 r_dot   # z-axis angular velocity rate of change in rad/s^2

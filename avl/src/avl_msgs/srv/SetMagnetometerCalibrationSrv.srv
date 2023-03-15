@@ -1,0 +1,20 @@
+#===============================================================================
+# Autonomous Vehicle Library
+#
+# PURPOSE: Calibrate AHRS magnetometer hard iron offsets.
+#
+# ARGUMENTS: A: Soft iron calibration matrix as a float32 array ordered as:
+#                   [A11, A12, A13, A21, A22, A23, A33. A31, A32, A33]
+#            B: Hard iron calibration vector as a float32 array ordered as:
+#                   [b1, b2, b3]
+#
+# AUTHOR:  babiggs
+#===============================================================================
+
+float32[] A
+float32[] b
+
+---
+
+string message
+bool success

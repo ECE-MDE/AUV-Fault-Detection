@@ -1,0 +1,6 @@
+bool    state_enable    # SW enable
+float64 pos             # angle in deg
+uint8   addr            # Address/location of fin, 0 for broadcast
+bool    rate_check      # enable or disable the SW check on rates
+---
+bool success

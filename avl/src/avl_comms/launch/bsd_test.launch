@@ -1,0 +1,57 @@
+<launch>
+
+    <!-- =================================================================== -->
+    <!-- Vehicle ID Number -->
+    <!-- =================================================================== -->
+    <rosparam param="/vehicle_id"> 0x01 </rosparam>
+
+    <!-- =================================================================== -->
+    <!-- Simulated Time -->
+    <!-- =================================================================== -->
+    <rosparam param="/use_sim_time"> false </rosparam>
+
+    <!-- =================================================================== -->
+    <!-- Console Logging Settings -->
+    <!-- =================================================================== -->
+    <rosparam param="/logging/console/enable"> true </rosparam>
+    <rosparam param="/logging/console/log_node"> true </rosparam>
+    <rosparam param="/logging/console/log_data"> false </rosparam>
+    <rosparam param="/logging/console/log_debug"> true </rosparam>
+    <rosparam param="/logging/console/log_info"> true </rosparam>
+    <rosparam param="/logging/console/log_warning"> true </rosparam>
+    <rosparam param="/logging/console/log_error"> true </rosparam>
+
+    <!-- =================================================================== -->
+    <!-- File Logging Settings -->
+    <!-- =================================================================== -->
+    <rosparam param="/logging/file/enable"> true </rosparam>
+    <rosparam param="/logging/file/log_node"> true </rosparam>
+    <rosparam param="/logging/file/log_data"> true </rosparam>
+    <rosparam param="/logging/file/log_debug"> true </rosparam>
+    <rosparam param="/logging/file/log_info"> true </rosparam>
+    <rosparam param="/logging/file/log_warning"> true </rosparam>
+    <rosparam param="/logging/file/log_error"> true </rosparam>
+
+    <!-- =================================================================== -->
+    <!-- nodes -->
+    <!-- =================================================================== -->
+
+    <node name="comms_manager_node" pkg="avl_comms" type="comms_manager_node"
+        clear_params="true" output="screen" required="true">
+        <rosparam command="load" file="/var/avl_config/comms_manager_node.config"/>
+    </node>
+
+    <node name="ethernet_channel_node" pkg="avl_comms" type="ethernet_channel_node"
+        required="true" clear_params="true" output="screen">
+        <rosparam command="load" file="/var/avl_config/ethernet_channel_node.config"/>
+    </node>
+
+    <!-- <node name="heartbeat_node" pkg="avl_system" type="heartbeat_node"
+        clear_params="true" required="true" output="screen">
+        <rosparam command="load" file="/var/avl_config/heartbeat_node.config"/>
+    </node> -->
+
+    <node name="bsd_passthrough_test_node" pkg="avl_comms" type="bsd_passthrough_test_node"
+            clear_params="true" required="true" output="screen"/>
+
+</launch>

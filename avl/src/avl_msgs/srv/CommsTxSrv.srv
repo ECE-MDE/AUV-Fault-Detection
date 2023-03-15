@@ -1,0 +1,31 @@
+#===============================================================================
+# Autonomous Vehicle Library
+#
+# Description: Definition of a comms transmit service request. For use by nodes
+#              to request the transmission of a packet by the communication
+#              architecture.
+#===============================================================================
+
+#===============================================================================
+#                              REQUEST DEFINITION
+#===============================================================================
+
+# Channel to transmit the data through
+uint8 channel
+
+# Interface to transmit the data to
+uint8 interface
+
+# Data to be transmitted
+uint8[] data
+
+#===============================================================================
+#                             RESPONSE DEFINITION
+#===============================================================================
+---
+
+# Indicates whether the transmission was successful
+bool success
+
+# Indicates success or the cause of a failure
+string message

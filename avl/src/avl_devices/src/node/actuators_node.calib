@@ -1,0 +1,25 @@
+#===============================================================================
+# Autonomous Vehicle Library
+#
+# DO NOT MODIFY! Automatically generated from actuator calibration routine!
+#
+# PURPOSE: Calibration file generated from the calibration tool:
+#              avl_tools/src/actuator_calibration_node.cpp
+#          This file defines the slope and intercept for a linear model fit for
+#          mapping fin angles commands to PWM commands.
+#
+# AUTHOR:  avl_tools/src/actuator_calibration_node.cpp
+#===============================================================================
+
+bottom:
+    slope: 0.01181580842635936
+    intercept: 1.431468311127116
+ port:
+    slope: 0.006780660377358486
+    intercept: 1.520341981132075
+ top:
+    intercept: 1.471703197987783
+    slope: 0.01179033417175709
+ starboard:
+    slope: 0.007887380191693267
+    intercept: 1.618310702875399

@@ -1,0 +1,31 @@
+[Unit]
+Description=AVL Vehicle Control
+StartLimitIntervalSec=0
+
+# Network connection
+After=network-online.target
+Wants=network-online.target
+
+# Chrony
+After=chrony.service
+Wants=chrony.service
+
+[Service]
+Type=simple
+Restart=no
+RestartSec=1
+User=ascl
+
+# Redirect output to a log file
+StandardOutput=file:/var/avl_logs/avl.log
+StandardError=inherit
+
+# Process
+ExecStartPre=/usr/bin/chronyc waitsync
+ExecStart=/home/ascl/avl/src/avl_tools/scripts/avl.sh start avl_690 690_v2-1.launch
+ExecStop=/home/ascl/avl/src/avl_tools/scripts/avl.sh stop
+ExecStopPost=/bin/mv /var/avl_logs/avl.log /var/avl_logs/current
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,4 @@
+string mode  # Sail LED mode string (INITIALIZE, IDLE, or RUN)
+---
+bool success     # Indicates success or failure
+string message   # Informational success or error message

@@ -1,0 +1,23 @@
+#===============================================================================
+# Autonomous Vehicle Library
+#
+# Description: Describes a WHOI downlink service request and response. The
+#              following modulation types can be chosen:
+#     ----------------------------------------
+#     | Num | Modulation Type    | Max Bytes |
+#     ----------------------------------------
+#     |  0  | Conv(2,1,9),FH-FSK | 32        |
+#     |  1  | BCH (128:8),QPSK   | 64        | <-- Reccomended low BPS
+#     |  2  | DSSS-15,QPSK       | 64        |
+#     |  3  | DSS-7,QPSK         | 256       |
+#     |  4  | BCH(64:10), QPSK   | 256       | <-- Reccomended medium BPS
+#     |  5  | Hamming(14:9),QPSK | 256       | <-- Reccomended high BPS
+#     |  6  | DSS-15,QPSK        | 32        |
+#     ----------------------------------------
+#===============================================================================
+
+uint8 modulation # Acoustic message modulation type to use in transmit
+uint8[] data     # Array of bytes
+---
+bool success     # Indicates success or failure
+string message   # Informational success or error message

@@ -1,0 +1,10 @@
+#===============================================================================
+# Autonomous Vehicle Library
+#
+# Description: Describes a service where the request is an array of bytes.
+#===============================================================================
+
+uint8[] data     # Array of bytes
+---
+bool success     # Indicates success or failure
+string message   # Informational success or error message
