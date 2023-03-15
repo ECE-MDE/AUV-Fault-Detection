@@ -24,10 +24,6 @@ To start a full system simulation with the `avl_fault_detection` package:
 
 `F1 > ROS: Show Status` will show all current node configurations, topics, and publishers
 
-## Updating the Workspace
-- Save any work, then delete everything under `avl/`
-- Re-run `setup.sh`
-
 ## Setting up Mission Control
 Follow the instructions [here](https://cmar.ece.vt.edu/avl/user-interface/avl_mission_control)
 
