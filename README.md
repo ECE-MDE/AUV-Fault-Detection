@@ -31,6 +31,9 @@ To start a full system simulation with the `avl_fault_detection` package:
 ## Setting up Mission Control
 Follow the instructions [here](https://cmar.ece.vt.edu/avl/user-interface/avl_mission_control)
 
+## Tips & Tricks
+- `File > Add folder to Workspace` > `/var/avl_logs` to add the log folder to the file tree
+
 ## To do
 [] Run setup.sh automatically
 [] Install Mission Control automatically
