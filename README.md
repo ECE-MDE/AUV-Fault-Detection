@@ -6,12 +6,18 @@
 - Install Docker from [here](https://docs.docker.com/get-docker/) or through `F1 > Dev Containers: Install Docker`
 - Open the `AUV-Fault-Detection` folder in VSCode. When prompted select "Reopen Container" popup or `F1 > Dev Containers: Rebuild and Reopen in Container`
     - VSCode will create a Docker container with ROS installed, share your local `AUV-Fault-Detection` folder with the container, then connect to the container. This allows you to edit and run code inside the container as if it was your local computer.
-- In the container, `cd avl` and `bash setup.sh`
+- ~~In the container, `cd avl` and `bash setup.sh`~~ This *should* happen automatically now.
     - VSCode will ask for your CMAR credentials, then pull the necessary git repos and their dependencies
     - The `avl` command will also be added to bash
 - Build the AVL code: `catkin_make`
-- Reload `.bashrc`: `source ~/.bashrc`
 - Activate the catkin workspace: `source devel/setup.sh`
+
+## Useful commands
+- `source /opt/ros/noetic/setup.bash`: Makes ROS commands available in your shell
+- `source avl/devel/setup.bash`: Allows ROS tools like `roslaunch` and `rosrun` to find your packages and nodes
+
+## Running data collection
+- `rosrun avl_fault_detection launcher.py`
 
 ## Running the simulation
 Syntax: `avl start <package_name> <launch_file_name>`
@@ -35,8 +41,8 @@ Follow the instructions [here](https://cmar.ece.vt.edu/avl/user-interface/avl_mi
 - `File > Add folder to Workspace` > `/var/avl_logs` to add the log folder to the file tree
 
 ## To do
-[] Run setup.sh automatically
+[X] Run setup.sh automatically
 [] Install Mission Control automatically
 [] Fix fluxbox toolbar font being white
-[] Allow setup.sh to run multiple times
+[X] Allow setup.sh to run multiple times
 [] `setup.sh` line endings
