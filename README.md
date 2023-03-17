@@ -16,8 +16,15 @@
 - `source /opt/ros/noetic/setup.bash`: Makes ROS commands available in your shell
 - `source avl/devel/setup.bash`: Allows ROS tools like `roslaunch` and `rosrun` to find your packages and nodes
 
+## Logs
+- Logs are stored in `/var/avl_logs/<timestamp>`
+- `/var/avl_logs/current` is symlinked to latest log, so `cd /var/avl_logs/current` to access latest log
+- `File > Add folder to Workspace` > `/var/avl_logs` to add the log folder to the file tree
+
 ## Running data collection
-- `rosrun avl_fault_detection launcher.py`
+- See the top of `data_collection_launcher.py` to change trial length, when fault triggers, etc.
+- `rosrun avl_fault_detection data_collection_launcher.py`
+- `data_collection.log` in `avl_logs` contains vehicle state data and fault labels in tabular form
 
 ## Running the simulation
 Syntax: `avl start <package_name> <launch_file_name>`
@@ -37,8 +44,6 @@ To start a full system simulation with the `avl_fault_detection` package:
 ## Setting up Mission Control
 Follow the instructions [here](https://cmar.ece.vt.edu/avl/user-interface/avl_mission_control)
 
-## Tips & Tricks
-- `File > Add folder to Workspace` > `/var/avl_logs` to add the log folder to the file tree
 
 ## To do
 [X] Run setup.sh automatically
