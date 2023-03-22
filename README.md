@@ -23,7 +23,9 @@
 
 ## Running data collection
 - See the top of `data_collection_launcher.py` to change trial length, when fault triggers, etc.
+- Start ROS core in a new terminal window: `roscore`
 - `rosrun avl_fault_detection data_collection_launcher.py`
+- Stop ROS core: Ctrl+C in terminal window
 - `data_collection.log` in `avl_logs` contains vehicle state data and fault labels in tabular form
 
 ## Running the simulation
